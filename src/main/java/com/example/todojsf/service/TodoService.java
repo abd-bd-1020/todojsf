@@ -26,7 +26,6 @@ public class TodoService {
     }
     public void delete(Long todoId){
         try{
-
             Todo todo = entityManager.find(Todo.class,todoId);
             entityManager.remove(todo);
 
