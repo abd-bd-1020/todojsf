@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+    <title>Hello World</title>
+    <link rel="stylesheet" type="text/css" href="todo.css" />
+
+    <style type="text/css">
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 600px;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .ui-float-label {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .grid .col-12,
+        .grid .col-6 {
+            width: 100%;
+            margin-bottom: 15px;
+        }
+
+        .grid {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .ui-fluid .ui-inputfield {
+            width: 100%;
+        }
+
+        .p-datatable {
+            width: 100%;
+            margin-top: 20px;
+            position: fixed;
+            top: 1px;
+            z-index: 1;
+        }
+
+        .floating-button {
+            position: fixed;
+            bottom: 20px;
+            right: 50%;
+            width: 60px;
+            height: 60px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+        }
+    </style>
+</h:head>
+<h:body>
+    <p:messages id="submitstatus" showDetail="false" autoUpdate="true" closable="true" />
+
+    <p:dialog id="todoDialog" header="#{todoBean.new ? 'New Todo' : 'Update Todo'}" widgetVar="todoDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+        <p:ajax event="close" listener="#{todoBean.resetTodo}" update=":todoform :todoDialog"/>
+        <h:form id="todoform" class="form-container">
+
+            <span class="ui-float-label">
+                <p:inputText id="title" value="#{todoBean.todo.title}"/>
+                <p:outputLabel for="title" value="Title"/>
+            </span>
+            <span class="ui-float-label">
+                <p:inputText id="description" value="#{todoBean.todo.description}"/>
+                <p:outputLabel for="description" value="Description"/>
+            </span>
+
+            <div class="grid ui-fluid">
+                <div class="col-12 md:col-6">
+                    <p:selectBooleanCheckbox itemLabel="Important" value="#{todoBean.todo.starred}" />
+                </div>
+
+                <div class="col-12 md:col-6">
+                    <p:selectBooleanCheckbox value="#{todoBean.todo.completed}" itemLabel="Completed"/>
+                </div>
+            </div>
+
+            <p:commandButton value="#{todoBean.new ?  'Submit' : 'Update'}" action="#{todoBean.submit}" update=":todoform :todotable" oncomplete="PF('todoDialog').hide();"/>
+        </h:form>
+    </p:dialog>
+
+    <p:dataTable id="todotable" value="#{todoBean.todos}" var="todo" class="p-datatable">
+        <p:column headerText="Title">
+            #{todo.title}
+        </p:column>
+        <p:column headerText="Description">
+            #{todo.description}
+        </p:column>
+        <p:column headerText="Completed">
+            #{todo.completed}
+        </p:column>
+        <p:column headerText="Starred">
+            #{todo.starred}
+        </p:column>
+        <p:column headerText="Actions">
+            <p:commandButton id="updateTodo" value="Update" action="#{todoBean.updateModal(todo)}" oncomplete="PF('todoDialog').show();" update=":todoform todoDialog"/>
+
+            <p:commandButton id="deleteTodo" value="Delete" action="#{todoBean.delete(todo.id)}" update="todotable"/>
+        </p:column>
+    </p:dataTable>
+
+    <button class="floating-button" onclick="PF('todoDialog').show();">+</button>
+
+</h:body>
+</html>

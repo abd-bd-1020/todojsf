@@ -15,6 +15,17 @@ public class Todo{
     private boolean completed;
     private boolean starred;
 
+    public Todo(Todo todo) {
+        this.id = todo.getId();
+        this.title = todo.getTitle();
+        this.description = todo.getDescription();
+        this.starred = todo.isStarred();
+        this.completed = todo.isCompleted();
+    }
+
+    // Default constructor
+    public Todo() {
+    }
     public Long getId() {
         return id;
     }

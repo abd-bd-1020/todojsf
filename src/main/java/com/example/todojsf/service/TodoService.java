@@ -13,9 +13,6 @@ public class TodoService {
     private EntityManager entityManager;
 
     public void create(Todo todo) {
-        todo.setCompleted(false);
-        todo.setDescription("check");
-        todo.setStarred(true);
         entityManager.persist(todo);
     }
 
@@ -33,5 +30,9 @@ public class TodoService {
         catch (Exception e){
             System.out.println(e.getMessage());
         }
+    }
+
+    public void update(Todo todo) {
+        entityManager.merge(todo);
     }
 }
