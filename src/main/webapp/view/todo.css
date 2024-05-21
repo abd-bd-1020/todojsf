@@ -7,36 +7,6 @@ body {
     box-sizing: border-box;
 }
 
-.form-container {
-    width: 100%;
-    max-width: 600px;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.ui-float-label {
-    width: 100%;
-    margin-bottom: 15px;
-}
-
-.grid .col-12,
-.grid .col-6 {
-    width: 100%;
-    margin-bottom: 15px;
-}
-
-.grid {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.ui-fluid .ui-inputfield {
-    width: 100%;
-}
-
 .p-datatable {
     width: 100%;
     margin-top: 20px;

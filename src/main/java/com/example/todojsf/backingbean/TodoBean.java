@@ -89,6 +89,7 @@ public class TodoBean implements Serializable {
     }
 
     public void delete(Long todoId){
+        logger.warning(String.valueOf(todoId));
         controllerID = String.valueOf(this);
         todoService.delete(todoId);
         todos.removeIf(t -> t.getId().equals(todoId));
