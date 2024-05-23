@@ -52,7 +52,7 @@
 <h:body>
     <p:messages id="submitstatus" showDetail="false" autoUpdate="true" closable="true" />
 
-
+    <h:form></h:form>
 
     <p:dataTable id="todotable" value="#{todoBean.todos}" var="todo" class="p-datatable">
         <p:column headerText="Title">
@@ -68,13 +68,19 @@
             #{todo.starred}
         </p:column>
         <p:column headerText="Actions">
-            <p:commandButton id="updateTodo" value="Update" action="#{todoBean.updateModal(todo)}" oncomplete="" update=" "/>
+            <p:commandButton id="updateTodo" value="Update" action="#{todoBean.todoEditorNavigationWithData(todo.id)}" oncomplete="" update=" "/>
 
             <p:commandButton id="deleteTodo" value="Delete" action="#{todoBean.delete(todo.id)}" update="todotable"/>
         </p:column>
     </p:dataTable>
-
-    <button class="floating-button" onclick="">+</button>
-
+<h:form>
+    <p:commandButton
+            id="navigateTodoEditorButton"
+            value="+"
+            action="#{todoBean.todoEditorNavigation}"
+            styleClass="floating-button"
+            immediate="true"
+            ajax="false" />
+</h:form>
 </h:body>
 </html>

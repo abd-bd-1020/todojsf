@@ -35,4 +35,8 @@ public class TodoService {
     public void update(Todo todo) {
         entityManager.merge(todo);
     }
+
+    public Todo getTodoById(Long todoId) {
+       return entityManager.find(Todo.class,todoId);
+    }
 }

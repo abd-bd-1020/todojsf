@@ -3,13 +3,15 @@ package com.example.todojsf.backingbean;
 import com.example.todojsf.entity.Todo;
 import com.example.todojsf.service.TodoService;
 import jakarta.annotation.PostConstruct;
-import jakarta.enterprise.context.RequestScoped;
+
 import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.view.ViewScoped;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
+import java.io.IOException;
 import java.io.Serializable;
 import java.util.List;
 import java.util.logging.Logger;
@@ -24,7 +26,7 @@ public class TodoBean implements Serializable {
     }
     private boolean isNew = true;
 
-
+//    no code today
     private final Todo todo = new Todo();
 
     public List<Todo> getTodos() {
@@ -41,6 +43,27 @@ public class TodoBean implements Serializable {
     public void init() {
         todos = todoService.getAllTodos();
 
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        Object selectedTodoId = externalContext.getSessionMap().get("selectedTodoId");
+
+        if (selectedTodoId != null) {
+            try {
+                Long todoId = Long.parseLong(selectedTodoId.toString());
+                Todo selectedTodo = todoService.getTodoById(todoId);
+                if (selectedTodo != null) {
+                    todo.setId(selectedTodo.getId());
+                    todo.setDescription(selectedTodo.getDescription());
+                    todo.setTitle(selectedTodo.getTitle());
+                    todo.setCompleted(selectedTodo.isCompleted());
+                    todo.setStarred(selectedTodo.isStarred());
+                    isNew = false;
+                }
+                externalContext.getSessionMap().remove("selectedTodoId");
+            } catch (NumberFormatException e) {
+                logger.warning("Invalid todo ID: " + selectedTodoId);
+            }
+        }
     }
     public void submit(){
         try{
@@ -60,6 +83,13 @@ public class TodoBean implements Serializable {
                     }
                 }
             }
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            ExternalContext externalContext = facesContext.getExternalContext();
+            try {
+                externalContext.redirect(externalContext.getRequestContextPath() + "/view/todo.xhtml");
+            } catch (IOException e) {
+                logger.warning(e.getMessage());
+            }
 
         }
         catch (Exception e){
@@ -71,22 +101,9 @@ public class TodoBean implements Serializable {
 
         }
 
-
-
     }
 
 
-    public void updateModal(Todo clickedTodo){
-        isNew = false;
-        todo.setId(clickedTodo.getId());
-        todo.setDescription(clickedTodo.getDescription());
-        todo.setTitle(clickedTodo.getTitle());
-        todo.setCompleted(clickedTodo.isCompleted());
-        todo.setStarred(clickedTodo.isStarred());
-
-
-
-    }
 
     public void delete(Long todoId){
         logger.warning(String.valueOf(todoId));
@@ -94,6 +111,7 @@ public class TodoBean implements Serializable {
         todoService.delete(todoId);
         todos.removeIf(t -> t.getId().equals(todoId));
     }
+
     public void resetTodo() {
         isNew = true;
         Todo newTodo = new Todo();
@@ -109,6 +127,28 @@ public class TodoBean implements Serializable {
         return controllerID;
     }
 
+
+
+    public void todoEditorNavigation() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        try {
+            externalContext.redirect(externalContext.getRequestContextPath() + "/view/todoEditor.xhtml");
+        } catch (IOException e) {
+            logger.warning(e.getMessage());
+        }
+    }
+
+    public void todoEditorNavigationWithData(Long  todoId) {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        ExternalContext externalContext = facesContext.getExternalContext();
+        try {
+            externalContext.getSessionMap().put("selectedTodoId", todoId);
+            externalContext.redirect(externalContext.getRequestContextPath() + "/view/todoEditor.xhtml");
+        } catch (IOException e) {
+            logger.warning(e.getMessage());
+        }
+    }
 
     public boolean isNew() {
         return isNew;
