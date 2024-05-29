@@ -2,6 +2,8 @@ package com.example.todojsf.entity;
 
 import jakarta.persistence.*;
 
+import java.util.Objects;
+
 
 @Entity
 public class Todo{
@@ -14,6 +16,19 @@ public class Todo{
     private String description;
     private boolean completed;
     private boolean starred;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Todo)) return false;
+        Todo todo = (Todo) o;
+        return completed == todo.completed && starred == todo.starred && Objects.equals(id, todo.id) && Objects.equals(title, todo.title) && Objects.equals(description, todo.description);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, title, description, completed, starred);
+    }
 
     public Todo(Todo todo) {
         this.id = todo.getId();

@@ -26,7 +26,6 @@ public class TodoBean implements Serializable {
     }
     private boolean isNew = true;
 
-//    no code today
     private final Todo todo = new Todo();
 
     public List<Todo> getTodos() {
@@ -43,27 +42,6 @@ public class TodoBean implements Serializable {
     public void init() {
         todos = todoService.getAllTodos();
 
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = facesContext.getExternalContext();
-        Object selectedTodoId = externalContext.getSessionMap().get("selectedTodoId");
-
-        if (selectedTodoId != null) {
-            try {
-                Long todoId = Long.parseLong(selectedTodoId.toString());
-                Todo selectedTodo = todoService.getTodoById(todoId);
-                if (selectedTodo != null) {
-                    todo.setId(selectedTodo.getId());
-                    todo.setDescription(selectedTodo.getDescription());
-                    todo.setTitle(selectedTodo.getTitle());
-                    todo.setCompleted(selectedTodo.isCompleted());
-                    todo.setStarred(selectedTodo.isStarred());
-                    isNew = false;
-                }
-                externalContext.getSessionMap().remove("selectedTodoId");
-            } catch (NumberFormatException e) {
-                logger.warning("Invalid todo ID: " + selectedTodoId);
-            }
-        }
     }
     public void submit(){
         try{
@@ -122,9 +100,18 @@ public class TodoBean implements Serializable {
         todo.setCompleted(newTodo.isCompleted());
     }
 
+    public void loadTodoById(Long id) {
+        if (id != null) {
+            Todo newTodo = todoService.getTodoById(id);
+            this.isNew = false;
+            todo.setId(newTodo.getId());
+            todo.setTitle(newTodo.getTitle());
+            todo.setDescription(newTodo.getDescription());
+            todo.setStarred(newTodo.isStarred());
+            todo.setCompleted(newTodo.isCompleted());
 
-    public String getControllerID() {
-        return controllerID;
+        }
+
     }
 
 
@@ -139,16 +126,7 @@ public class TodoBean implements Serializable {
         }
     }
 
-    public void todoEditorNavigationWithData(Long  todoId) {
-        FacesContext facesContext = FacesContext.getCurrentInstance();
-        ExternalContext externalContext = facesContext.getExternalContext();
-        try {
-            externalContext.getSessionMap().put("selectedTodoId", todoId);
-            externalContext.redirect(externalContext.getRequestContextPath() + "/view/todoEditor.xhtml");
-        } catch (IOException e) {
-            logger.warning(e.getMessage());
-        }
-    }
+
 
     public boolean isNew() {
         return isNew;

@@ -54,6 +54,10 @@
 </h:head>
 <h:body>
     <h:form id="todoform" class="form-container">
+        <f:metadata>
+            <f:viewParam name="id" value="#{todoBean.todo.id}" />
+            <f:event type="preRenderView" listener="#{todoBean.loadTodoById(todoBean.todo.id)}"/>
+        </f:metadata>
 
         <span class="ui-float-label">
             <p:inputText id="title" value="#{todoBean.todo.title}"/>

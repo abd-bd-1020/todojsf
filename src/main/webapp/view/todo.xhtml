@@ -68,8 +68,9 @@
             #{todo.starred}
         </p:column>
         <p:column headerText="Actions">
-            <p:commandButton id="updateTodo" value="Update" action="#{todoBean.todoEditorNavigationWithData(todo.id)}" oncomplete="" update=" "/>
-
+            <h:link value="Update" outcome="todoEditor">
+                <f:param name="id" value="#{todo.id}" />
+            </h:link>
             <p:commandButton id="deleteTodo" value="Delete" action="#{todoBean.delete(todo.id)}" update="todotable"/>
         </p:column>
     </p:dataTable>
